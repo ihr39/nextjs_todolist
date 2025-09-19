@@ -24,10 +24,32 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link href="/src/globals.css" rel="stylesheet"/>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="flex h-24">
+          <div className="flex w-[15%] bg-red-500 pl-10 items-end">
+            <p className="text-[32px] font-bold">TODO</p>
+          </div>
+          <div className="flex w-[85%] bg-fuchsia-500 items-end">
+            <p className="absolute right-40">회원가입</p>
+            <p className="absolute right-20">로그인</p>
+            <p className="absolute right-0">로그아웃</p>
+          </div>
+        </div>
+        <div className="flex">
+          <div className="w-[15%] bg-blue-500 pl-15 pt-5 pb-5 text-left">
+            <ul className="list-disc marker:text-sky-400">
+              <li>TODO ✏️</li>
+              <li className="pt-2">TODO ✏️</li>
+              <li>TODO ✏️</li>
+            </ul>
+          </div>
+          <div className="w-[85%]">{children}</div>
+        </div>
       </body>
     </html>
   );
