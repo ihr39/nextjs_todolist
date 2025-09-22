@@ -1,5 +1,6 @@
 'use client'
 
+import { signIn } from "next-auth/react"
 import { KeyboardEvent, useEffect, useState } from "react"
 
 //--유저가 입력한 값만....넣고 검색...필요없으니 클라이언트 컴포넌트로 해도될듯...
@@ -16,7 +17,7 @@ export default function Login(){
                     <div>
                         <label className="text-sm/6 font-medium text-gray-900">아이디</label>
                         <input type="text" name="userid" aria-label="아이디" 
-                            className="w-full rounded-md px-3 py-1.5 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600" 
+                            className="form-input" 
                             onKeyDown={(e)=>idEnter(e)}
                             onChange={()=>{
                                 let useridEle = document.querySelector('[name="userid"]')
@@ -29,7 +30,7 @@ export default function Login(){
                     <div className="mt-5">
                         <label className="text-sm/6 font-medium text-gray-900">비밀번호</label>
                         <input type="password" name="password" aria-label="비밀번호" 
-                            className="w-full rounded-md px-3 py-1.5 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600" 
+                            className="form-input" 
                             onKeyDown={(e)=>passwordEnter(e)}
                             onChange={()=>{
                                 let passwordEle = document.querySelector('[name="password"]')
@@ -42,7 +43,7 @@ export default function Login(){
                     <div className="mt-4">
                         <button type="button" 
                             className="w-full bg-sky-300 rounded-md py-2 hover:bg-sky-500 hover:text-white"
-                            onClick={(e)=>{
+                            onClick={async (e)=>{
                                 if(userid == ''){
                                     alert('아이디를 입력하세요')
                                     return
@@ -52,16 +53,31 @@ export default function Login(){
                                     return
                                 }
 
-                                fetch('/api/user/login',{
-                                    method:'POST',
-                                    body: JSON.stringify({ userid: userid, password: password})
+                                let result = await signIn('credentials',{ //--obj형태로 넘겨서 JSON.parse할 필요가 없음
+                                    userid: userid,
+                                    password: password,
+                                    redirect: true,
+                                    callbackUrl: '/'
                                 })
+                                
+                                // fetch('/api/user/login',{
+                                //     method:'POST',
+                                //     body: JSON.stringify({ userid: userid, password: password})
+                                // }).then((r)=>r.json())
+                                // .then((r: obj)=>{
+                                //     if(r.result != 'OK') alert(r.result)
+                                //     else location.href = "/"
+                                //     //console.log(r)
+                                // })
                             }}
                         >로그인</button>
                     </div>
                     <div className="mt-4 text-gray-400 text-center ">
                         <span className="text-[12px]">OR</span>
-                        <hr className="text-gray-300"/>
+                        <hr className="text-gray-300 mb-4"/>
+                        <img src="../../../google_login.png" className="mb-2" onClick={() => signIn("google")}/>
+                        <img src="../../../kakao_login_medium_wide.png" className="mb-2" onClick={() => signIn("kakao")}/>
+                        <img src="../../../naver_login.png" className="h-10" onClick={() => signIn("naver")}/>
                     </div>
                 </form>
             </div>
