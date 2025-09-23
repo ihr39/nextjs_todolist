@@ -1,5 +1,5 @@
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-import NextAuth, { AuthOptions } from "next-auth";
+import NextAuth, { Account, AuthOptions, User } from "next-auth";
 import { connectDB } from "../../../util/database";
 import Google from "next-auth/providers/google"
 import Kakao from "next-auth/providers/kakao"
@@ -65,12 +65,12 @@ export const authOptions = {
   callbacks: {
     //4. jwt 만들 때 실행되는 코드 
     //user변수는 DB의 유저정보담겨있고 token.user에 뭐 저장하면 jwt에 들어갑니다.
-    jwt: async ({ token, user }) => {
-      if (user) {
+    jwt: async ({ token, user, account }) => {
+      if (user && account) {
         token.user = {};
-        token.user.userid = user.userid ? user.userid : ''
-        token.user.email = user.email ? user.email : ''
-        token.user.username = user.username ? user.username : ''
+        token.user.userid = account.provider != 'credentials' ? user.id : user.userid
+        token.user.email = account.provider != 'credentials' ? user.email : user.email
+        token.user.username = account.provider != 'credentials' ? user.name : user.username
       }
       return token;
     },
