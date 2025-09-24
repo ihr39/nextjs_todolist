@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react"
+import { todayClean } from "../../../../util/commonFunc"
 
 interface todoState{
     id: number, content: string, complete: boolean
@@ -121,24 +122,6 @@ export default function TodoList(){
             </div> 
         </div>
     )
-}
-
-function today(): string{
-    let date: DateType = new Date
-    let year: string = (date.getFullYear()).toString()
-    let mon:string = date.getMonth() + 1 < 10 ? '0'+(date.getMonth() + 1).toString() : (date.getMonth() + 1).toString() 
-    let day: string = (date.getDate()).toString()
-    let today: string = year+'년'+ mon+'월'+ day+'일'
-    return today
-}
-
-function todayClean(): string{
-    let date: DateType = new Date
-    let year: string = (date.getFullYear()).toString()
-    let mon:string = date.getMonth() + 1 < 10 ? '0'+(date.getMonth() + 1).toString() : (date.getMonth() + 1).toString() 
-    let day: string = (date.getDate()).toString()
-    let today: string = year+ mon+ day
-    return today
 }
 
 function changeData(params: todoState[]){

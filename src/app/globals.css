@@ -14,3 +14,73 @@
   outline-color: var(--color-indigo-600);
 }
 
+@utility diary-area{
+  width: 100%;
+  display: block;
+  color: var(--color-gray-900);
+  padding: calc(var(--spacing) * 2.5);;
+  background-color: var(--color-gray-50);
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+  border-color: var(--color-gray-300);
+  border-style: var(--tw-border-style);
+  border-width: 1px;
+  border-radius: var(--radius-lg);
+}
+
+.diary-area:focus{
+  border-color: var(--color-blue-500);
+  --tw-ring-color: var(--color-blue-500)
+}
+
+@utility default-btn{
+  color: white;
+  background-color: var(--color-blue-700);
+  font-size: var(--text-sm); 
+  line-height: var(--text-sm--line-height);
+  font-weight: 500;
+  border-radius: calc(infinity * 1px);
+  text-align: center;
+  padding-inline: calc(var(--spacing) * 5);
+  padding-block: calc(var(--spacing) * 2.5);
+  margin-inline-end: calc(var(--spacing) * 2);
+  margin-bottom: calc(var(--spacing) * 2);
+}
+
+.default-btn:hover{
+  background-color: var(--color-blue-800);
+}
+
+.default-btn:focus{
+  outline-style: none;
+  --tw-ring-color: var(--color-blue-500)
+  --tw-ring-shadow: 0 0 0 4px;
+  --tw-ring-color: var(--color-blue-300)
+}
+
+@utility light-btn{
+  color: var(--color-gray-900);
+  background-color: white;
+  border: 1px solid;
+  border-color: var(--color-gray-300);
+  font-size: var(--text-sm); 
+  line-height: var(--text-sm--line-height);
+  font-weight: 500;
+  border-radius: calc(infinity * 1px);
+  text-align: center;
+  padding-inline: calc(var(--spacing) * 5);
+  padding-block: calc(var(--spacing) * 2.5);
+  margin-inline-end: calc(var(--spacing) * 2);
+  margin-bottom: calc(var(--spacing) * 2);
+}
+
+.light-btn:hover{
+  background-color: var(--color-gray-100);
+}
+
+.light-btn:focus{
+  outline-style: none;
+  --tw-ring-color: var(--color-gray-100)
+  --tw-ring-shadow: 0 0 0 4px;
+  --tw-ring-color: var(--color-gray-100)
+}
