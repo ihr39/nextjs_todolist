@@ -63,9 +63,33 @@ export const authOptions = {
     maxAge: 30 * 24 * 60 * 60 //30일
   },
   callbacks: {
+    async signIn({user,account}){
+      let exsitUser
+      let db = (await connectDB).db('todoList')
+      if(account?.provider != 'credentials'){
+        try{
+          exsitUser = await db.collection('user').findOne({userid: user.id})
+          if(!exsitUser) {
+            let result = await db.collection('user').insertOne({
+                            userid: user.id,
+                            username: user.name,
+                            email: user.email,
+                            profile: user.image,
+                            provider: account?.provider,
+                            birth: ''
+                        })
+            if(!result.acknowledged) return false
+          }
+        }catch(e){
+          console.log(e)
+          return false
+        }
+      }
+      return true
+    },
     //4. jwt 만들 때 실행되는 코드 
     //user변수는 DB의 유저정보담겨있고 token.user에 뭐 저장하면 jwt에 들어갑니다.
-    jwt: async ({ token, user, account }) => {
+    jwt: async ({ token, user, account }) => { //--db 저장명이랑 맞춰야지ㅡㅡ 몰랐어~
       if (user && account) {
         token.user = {};
         token.user.userid = account.provider != 'credentials' ? user.id : user.userid

@@ -12,6 +12,8 @@ export default async function handler(req, res){
             username: req.body.username,
             email: req.body.email,
             birth: req.body.year + req.body.month + req.body.date,
+            profile: '',
+            provider: ''
         }
         try{
             let result = await db.collection('user').insertOne(insertData)
