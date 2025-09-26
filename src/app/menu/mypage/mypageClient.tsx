@@ -11,7 +11,8 @@ type FormInput = {
     year: string,
     month: string,
     date: string,
-    profile: File[]
+    profile: File[],
+    profileUrl: string
 }
 
 export default function MyPageClient({userInfo}:{userInfo: UserInfo}){
@@ -27,7 +28,7 @@ export default function MyPageClient({userInfo}:{userInfo: UserInfo}){
 
     const {onChange, ...rest} = register("profile") //--register("profile")가 반환하는 객체는 여러 속성이 존재=> 그중 onChange만 가져오고 나머지는 rest라는 객체에 담기게 함
 
-    const handleFileChange = (e)=>{
+    const handleFileChange = (e: { target: any; type?: any; })=>{
         let fileEle = e.target
 
         //--리엑트 훅의 온체이지 이벤트
@@ -45,16 +46,28 @@ export default function MyPageClient({userInfo}:{userInfo: UserInfo}){
         }
     }
 
-    const onSubmit: SubmitHandler<FormInput> = (data) =>{
-        //-- 파일 S3에 저장하는 것 부터
-        //console.log(data.entries())
-        fetch("/api/mypage/edit",{
+    const onSubmit: SubmitHandler<FormInput> = async (data) =>{
+        
+        let file = data.profile[0]
+        let formData = new FormData();
+        formData.append('username',data.username)
+        formData.append('birth', data.year+data.month+data.date)
+        if(file) formData.append('pofile', data.profile[0])
+        
+        //console.log(formData)
+        formData.append('profile',file)
+        fetch('/api/mypage/edit',{
             method:'POST',
-            body: JSON.stringify(data)
+            body: formData
         }).then((r)=>r.json())
         .then((r)=>{
-            console.log(r)
+            if(r.errMsg){
+                alert(r.errMsg)
+                return
+            }
+            alert('수정완료')
         })
+        
     }
 
     function onClose(){
@@ -97,44 +110,65 @@ export default function MyPageClient({userInfo}:{userInfo: UserInfo}){
                 <div className="mb-10">
                     <button type="button" className="default-btn" 
                         onClick={(e)=>{
+                            if(userInfo.provider != ''){
+                                alert(userInfo.provider+'로 로그인한 유저입니다.')
+                                return
+                            }
                             setModal(true)
                         }} 
                     >비밀번호변경</button>
                     <ModalPassword onShow={modal} onClose={onClose}/>
                 </div>
                 <div className="mb-10">
-                    <input className="form-input w-[80%] mr-5" defaultValue={userInfo.email}/>
-                    <button type="button" className="default-btn">인증</button>
+                    <input className="form-input w-[80%] mr-5" name="email" defaultValue={userInfo.email}/>
+                    <button type="button" className="default-btn"
+                        onClick={(e)=>{
+                            let emialEle = document.querySelector('[name="email"]')
+                            if(!(emialEle instanceof HTMLInputElement)) return
+                            if(emialEle.value == ''){
+                                alert('이메일을 입력하세요.')
+                                emialEle.focus()
+                                return
+                            } 
+
+                        }}
+                    >인증</button>
                 </div>
                 <div className="mb-10">
                     <label className="">생년월일</label>
                     <div className="w-full">
-                        <select id="year" {...register("year")} className="col-start-1 row-start-1 rounded-md py-1 p-3 text-gray-500 sm:text-sm/6">
+                        <select id="year" {...register("year")} 
+                            defaultValue={userInfo.birth.substring(0,4)}
+                            className="col-start-1 row-start-1 rounded-md py-1 p-3 text-gray-500 sm:text-sm/6"
+                        >
                             <option value="">년</option>
                             {
                                 year.map((a,i)=>(
-                                    userInfo.birth.substring(0,4) == a.toString()? 
-                                        <option key={i} value={a} selected>{a}</option>: <option key={i} value={a}>{a}</option>
+                                    <option key={i} value={a}>{a}</option>
                                 ))
                             }
                         </select>
                         <label className="text-sm/6  text-gray-900 p-2">/</label>
-                        <select id="month" {...register("month")} className="col-start-1 row-start-1 rounded-md py-1 p-3 text-gray-500 sm:text-sm/6">
+                        <select id="month" {...register("month")} 
+                            defaultValue={userInfo.birth.substring(4,6)}
+                            className="col-start-1 row-start-1 rounded-md py-1 p-3 text-gray-500 sm:text-sm/6"
+                        >
                             <option value="">월</option>
                             {
                                 month.map((a,i)=>(
-                                    userInfo.birth.substring(4,6) == a.toString() ?
-                                        <option key={i} value={a} selected>{a}</option>: <option key={i} value={a}>{a}</option>
+                                    <option key={i} value={a}>{a}</option>
                                 ))
                             }
                         </select>
                         <label className="text-sm/6  text-gray-900 p-2">/</label>
-                        <select id="date" {...register("date")} className="col-start-1 row-start-1 rounded-md py-1 p-3 text-gray-500 sm:text-sm/6">
+                        <select id="date" {...register("date")}
+                            defaultValue={userInfo.birth.substring(6,8)}
+                            className="col-start-1 row-start-1 rounded-md py-1 p-3 text-gray-500 sm:text-sm/6"
+                        >
                             <option value="">일</option>
                             {
                                 date.map((a,i)=>(
-                                    userInfo.birth.substring(6,8) == a.toString() ?
-                                        <option key={i} value={a} selected>{a}</option>: <option key={i} value={a}>{a}</option>
+                                    <option key={i} value={a}>{a}</option>
                                 ))
                             }
                         </select>
@@ -148,4 +182,8 @@ export default function MyPageClient({userInfo}:{userInfo: UserInfo}){
             </form>
         </div>
     )
+}
+
+function emailAuth(email: string){
+    
 }

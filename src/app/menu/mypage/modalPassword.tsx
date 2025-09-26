@@ -30,7 +30,7 @@ export default function ModalPassword({onShow, onClose}:{onShow: boolean, onClos
                         </div>
 
                         <div className="">
-                            <button className="default-btn dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            <button type="button" className="default-btn dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                                 onClick={(e)=>{
                                     let param: PassWord= {changedPassword: '', currntPassword: ''}
                                     let chanedPasswordEle = document.querySelector('[name="changedPassword"]')
@@ -41,7 +41,7 @@ export default function ModalPassword({onShow, onClose}:{onShow: boolean, onClos
 
                                     param.changedPassword = chanedPasswordEle.value
                                     param.currntPassword = currentPasswordEle.value
-                                    fetch('/api/user/password/change',{
+                                    fetch('/api/user/password',{
                                         method:'POST',
                                         body: JSON.stringify(param)
                                     }).then((r)=>r.json())
