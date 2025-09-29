@@ -36,15 +36,15 @@ export default function ModalDiary({update, modalOpen, diarys, onClose, onSave}:
                                     let contentEle = document.querySelector('[name="content"]')
                                     if(dateEle instanceof HTMLInputElement) params.date = dateEle.value
                                     if(contentEle instanceof HTMLTextAreaElement) params.content = contentEle.value
-                                    fetch('/api/diary/add', {method:'POST',
+                                    fetch('/api/diary', {method:'POST',
                                         body: JSON.stringify(params)
                                     }).then((r)=>r.json())
                                     .then((r)=>{
-                                        console.log(r)
                                         if(r.errMsg){
                                             alert(r.errMsg)
                                             return
                                         }
+                                        alert('작성완료')
                                         onSave({date: params.date, content: params.content})
                                         //let closeEle = document.querySelector('#close')
                                         //if(closeEle instanceof HTMLButtonElement) closeEle.click()
