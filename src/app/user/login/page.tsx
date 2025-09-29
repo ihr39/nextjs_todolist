@@ -53,31 +53,21 @@ export default function Login(){
                                     return
                                 }
 
-                                let result = await signIn('credentials',{ //--obj형태로 넘겨서 JSON.parse할 필요가 없음
+                                await signIn('credentials',{ //--obj형태로 넘겨서 JSON.parse할 필요가 없음
                                     userid: userid,
                                     password: password,
                                     redirect: true,
                                     callbackUrl: '/'
                                 })
-                                
-                                // fetch('/api/user/login',{
-                                //     method:'POST',
-                                //     body: JSON.stringify({ userid: userid, password: password})
-                                // }).then((r)=>r.json())
-                                // .then((r: obj)=>{
-                                //     if(r.result != 'OK') alert(r.result)
-                                //     else location.href = "/"
-                                //     //console.log(r)
-                                // })
                             }}
                         >로그인</button>
                     </div>
                     <div className="mt-4 text-gray-400 text-center ">
                         <span className="text-[12px]">OR</span>
                         <hr className="text-gray-300 mb-4"/>
-                        <img src="../../../google_login.png" className="mb-2" onClick={() => signIn("google")}/>
-                        <img src="../../../kakao_login_medium_wide.png" className="mb-2" onClick={() => signIn("kakao")}/>
-                        <img src="../../../naver_login.png" className="h-10" onClick={() => signIn("naver")}/>
+                        <img src="../../../google_login.png" className="mb-2" onClick={() => signIn("google",{redirect:true, callbackUrl:'/'})}/>
+                        <img src="../../../kakao_login_medium_wide.png" className="mb-2" onClick={() => signIn("kakao",{redirect:true, callbackUrl:'/'})}/>
+                        <img src="../../../naver_login.png" className="h-10" onClick={() => signIn("naver",{redirect:true, callbackUrl:'/'})}/>
                     </div>
                 </form>
             </div>

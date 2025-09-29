@@ -63,7 +63,7 @@ export const authOptions = {
     maxAge: 30 * 24 * 60 * 60 //30일
   },
   callbacks: {
-    async signIn({user,account}){
+    async signIn({user,account}){ //--구글/카카오 같은 로그인을 사용할 때
       let exsitUser
       let db = (await connectDB).db('todoList')
       if(account?.provider != 'credentials'){

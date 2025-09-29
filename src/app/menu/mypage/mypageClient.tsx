@@ -8,6 +8,7 @@ import { useForm, SubmitHandler } from "react-hook-form"
 
 type FormInput = {
     username: string,
+    email: string,
     year: string,
     month: string,
     date: string,
@@ -22,9 +23,15 @@ export default function MyPageClient({userInfo}:{userInfo: UserInfo}){
     const{
         register,
         handleSubmit,
+        trigger,
         watch,
         formState: { errors },
-    } = useForm<FormInput>();
+        getValues,
+    } = useForm<FormInput>({
+        defaultValues: {
+            email: userInfo.email
+        }
+    });
 
     const {onChange, ...rest} = register("profile") //--register("profile")가 반환하는 객체는 여러 속성이 존재=> 그중 onChange만 가져오고 나머지는 rest라는 객체에 담기게 함
 
@@ -47,14 +54,11 @@ export default function MyPageClient({userInfo}:{userInfo: UserInfo}){
     }
 
     const onSubmit: SubmitHandler<FormInput> = async (data) =>{
-        
         let file = data.profile[0]
         let formData = new FormData();
         formData.append('username',data.username)
         formData.append('birth', data.year+data.month+data.date)
         if(file) formData.append('pofile', data.profile[0])
-        
-        //console.log(formData)
         formData.append('profile',file)
         fetch('/api/mypage/edit',{
             method:'POST',
@@ -67,12 +71,33 @@ export default function MyPageClient({userInfo}:{userInfo: UserInfo}){
             }
             alert('수정완료')
         })
-        
     }
 
-    function onClose(){
-        setModal(false)
+    let emailSend = async () =>{
+        let isValid = await trigger('email')
+        if(isValid){
+            let email = getValues('email')
+            fetch('/api/mail',{method:'POST',body: JSON.stringify({email: email})})
+            .then((r)=>r.json())
+            .then((r)=>{
+                if(r.errMsg){
+                    alert(r.errMsg)
+                    return
+                }
+                let eadEele = document.querySelector('#email-auth-div')
+                if(!(eadEele instanceof HTMLDivElement)) return;
+                eadEele.style.display = 'block'
+                let inputEle = eadEele.children.namedItem('authNum')
+                if(inputEle instanceof HTMLInputElement) inputEle.focus()
+            })
+        }else{
+            let emailEle = document.querySelector('[name="email"]')
+            if(emailEle instanceof HTMLInputElement) emailEle.focus()
+        }
     }
+
+    let onClose = () => setModal(false)
+    
 
     useEffect(()=>{
         return()=>{ //--cleanup함수
@@ -120,19 +145,41 @@ export default function MyPageClient({userInfo}:{userInfo: UserInfo}){
                     <ModalPassword onShow={modal} onClose={onClose}/>
                 </div>
                 <div className="mb-10">
-                    <input className="form-input w-[80%] mr-5" name="email" defaultValue={userInfo.email}/>
+                    <input className="form-input w-[80%] mr-5" {...register("email",{required: true})} name="email" defaultValue={userInfo.email}/>
                     <button type="button" className="default-btn"
-                        onClick={(e)=>{
-                            let emialEle = document.querySelector('[name="email"]')
-                            if(!(emialEle instanceof HTMLInputElement)) return
-                            if(emialEle.value == ''){
-                                alert('이메일을 입력하세요.')
-                                emialEle.focus()
-                                return
-                            } 
-
-                        }}
+                        onClick={ ()=> emailSend() }
                     >인증</button>
+                    { errors.email && <p className="errmsg">이메일은 필수 값입니다</p> }
+                    <div style={{display: "none"}} id="email-auth-div">
+                        <label className="mr-4">인증번호</label>
+                        <input className="form-input w-[63%] mr-5" name="authNum"/>
+                        <button type="button" className="default-btn"
+                            onClick={(e)=>{
+                                let authEle = document.querySelector('[name="authNum"]')
+                                let emailEle = document.querySelector('[name="email"]')
+                                if(!(authEle instanceof HTMLInputElement)) return
+                                else if(!(emailEle instanceof HTMLInputElement)) return
+
+                                fetch('/api/mail/auth',{
+                                    method:'POST',
+                                    body: JSON.stringify({authNum: authEle.value, email: emailEle.value})
+                                })
+                                .then((r)=>r.json())
+                                .then((r)=>{
+                                    console.log(r)
+                                    if(r.errMsg){
+                                        alert(r.errMsg)
+                                        return
+                                    }
+                                    alert('인증 성공했습니다.')
+                                    let parentEle = authEle.parentElement
+                                    if(parentEle instanceof HTMLDivElement) parentEle.style.display = 'none'
+                                    authEle.disabled = true
+                                    emailEle.disabled = true
+                                })
+                            }}
+                        > 확인</button>
+                    </div>
                 </div>
                 <div className="mb-10">
                     <label className="">생년월일</label>
@@ -182,8 +229,4 @@ export default function MyPageClient({userInfo}:{userInfo: UserInfo}){
             </form>
         </div>
     )
-}
-
-function emailAuth(email: string){
-    
 }
