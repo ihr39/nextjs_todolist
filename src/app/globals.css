@@ -132,3 +132,32 @@
   color: var(--color-green-600);
   font-weight: 500;
 }
+
+@utility likeLinkBtn{
+  font-weight: 500;
+  color: var(--color-blue-600);
+}
+
+.likeLinkBtn:hover{
+  text-decoration-line: underline;
+}
+
+@utility underlineInput{
+  display: block;
+  padding-block: calc(var(--spacing) * 2.5);
+  padding-inline-end: calc(var(--spacing) * 0);
+  width: 100%;
+  font-size: var(--text-sm);
+  color: var(--color-gray-900);
+  background-color: transparent;
+  border-width: 0px;
+  border-bottom-width: 2px;
+  border-color: var(--color-gray-400);
+  appearance: none;
+}
+
+.underlineInput:focus{
+  outline-style: none;
+  --tw-ring-shadow: 0 0 0 0px;
+  border-color: var(--color-blue-600);
+}

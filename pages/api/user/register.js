@@ -13,11 +13,12 @@ export default async function handler(req, res){
             email: req.body.email,
             birth: req.body.year + req.body.month + req.body.date,
             profile: '',
-            provider: ''
+            provider: '',
+            auth: false,
         }
         try{
             let result = await db.collection('user').insertOne(insertData)
-            if(result.acknowledged)res.status(200).redirect('/login')
+            if(result.acknowledged)res.status(200).redirect('/user/login')
         }catch(e){
             console.log(e)
             return res.status(500).send('서버이상/ 가입실패')

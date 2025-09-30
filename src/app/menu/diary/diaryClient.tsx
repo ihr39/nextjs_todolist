@@ -41,7 +41,7 @@ export default function DiaryClient({contents}:{contents: {date:string, content:
             <div className="grid grid-cols-4 gap-20">
                 {
                     contentList ? contentList.map((a,i)=>(
-                        <div key={a.date} className="py-5 px-6 rounded-xl outline-1 outline-gray-300 shadow-md" 
+                        <div key={a.date} className="py-5 px-6 rounded-xl outline-1 outline-gray-300 shadow-md bg-white" 
                             onClick={()=>{
                                 setModalOpen(true)
                                 setDiarys(a)
@@ -49,7 +49,7 @@ export default function DiaryClient({contents}:{contents: {date:string, content:
                             }}
                         >
                             {a.date}
-                            <div className="text-gray-300 text-[12px]">짧게라도 일기 내용보여주면 더 이쁠 듯?</div>
+                            <div className="text-gray-500 text-[12px]">짧게라도 일기 내용보여주면 더 이쁠 듯?</div>
                         </div>
                     ))
                     : <div></div>

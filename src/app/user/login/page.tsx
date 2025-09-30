@@ -1,5 +1,6 @@
 'use client'
 
+import Loading from "@/app/loading"
 import { signIn } from "next-auth/react"
 import { KeyboardEvent, useEffect, useState } from "react"
 
@@ -8,6 +9,7 @@ export default function Login(){
     //--이번에는..state써서
     const [userid, setUserId] = useState('')
     const [password, setPassword] = useState('')
+    const [loading, setLoading] =useState(false)
 
     return(
         <div className="p-15 justify-items-center">
@@ -52,7 +54,7 @@ export default function Login(){
                                     alert('비밀번호를 입력하세요')
                                     return
                                 }
-
+                                setLoading(true)
                                 await signIn('credentials',{ //--obj형태로 넘겨서 JSON.parse할 필요가 없음
                                     userid: userid,
                                     password: password,
@@ -69,6 +71,7 @@ export default function Login(){
                         <img src="../../../kakao_login_medium_wide.png" className="mb-2" onClick={() => signIn("kakao",{redirect:true, callbackUrl:'/'})}/>
                         <img src="../../../naver_login.png" className="h-10" onClick={() => signIn("naver",{redirect:true, callbackUrl:'/'})}/>
                     </div>
+                    { loading ? <Loading/>: '' }
                 </form>
             </div>
         </div>

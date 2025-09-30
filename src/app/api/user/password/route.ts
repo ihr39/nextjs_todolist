@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import bcrypt from 'bcrypt'
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "../../../../../util/database";
-import { authOptions } from "../../../../../pages/api/auth/[...nextauth]";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 //--속도가 더 빠른듯?
 export async function POST(req: NextRequest){

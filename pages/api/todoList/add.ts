@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDB } from "../../../util/database";
-import { authOptions } from "../auth/[...nextauth]";
 import {getServerSession} from "next-auth"
 import { ObjectId } from "mongodb";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse){
     if(req.method == 'POST'){

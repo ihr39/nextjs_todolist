@@ -4,8 +4,8 @@ import "./globals.css";
 import Logout from "../../layoutClient/logout";
 import LogIn from "../../layoutClient/login";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../../pages/api/auth/[...nextauth]";
 import SideBar from "../../layoutClient/sidebar";
+import { authOptions } from "./api/auth/[...nextauth]/route";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,35 +31,35 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link href="/src/globals.css" rel="stylesheet"/>
+        <link href="../src/globals.css" rel="stylesheet"/>
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}
       >
-        <div className="flex h-24">
-          <div className="flex w-[15%] bg-red-500 pl-10 items-end">
+        <div className="flex h-24 bg-white shadow-sm">
+          <div className="flex w-[15%] pl-10 items-end">
             <p className="text-[32px] font-bold">TODO</p>
           </div>
-          <div className="flex w-[85%] bg-fuchsia-500 items-end">
+          <div className="flex w-[85%] items-end ">
             {
               session ? 
-              <div className="flex w-[85%] bg-fuchsia-500 items-end">
+              <div className="flex w-[85%] items-end">
                 <span className="absolute right-20"><strong>{session.user.username}님</strong></span>
                 <Logout/>
               </div>
               : 
-              <div className="flex w-[85%] bg-fuchsia-500 items-end">
+              <div className="flex w-[85%] items-end">
                 <a className="absolute right-20" href="/user/register">회원가입</a>
                 <LogIn/>
               </div>
             } 
           </div>
         </div>
-        <div className="flex">
-          <div className="w-[15%] bg-blue-500 pl-15 pt-5 pb-5 text-left">
+        <div className="flex h-screen">
+          <div className="w-[15%] pl-15 pt-5 pb-5 text-left bg-white border-r border-gray-200">
             <SideBar/>
           </div>
-          <div className="w-[85%]">{children}</div>
+          <div className="w-[85%] ">{children}</div>
         </div>
       </body>
     </html>

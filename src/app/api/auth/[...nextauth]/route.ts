@@ -1,11 +1,13 @@
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 import NextAuth, { Account, AuthOptions, User } from "next-auth";
-import { connectDB } from "../../../util/database";
 import Google from "next-auth/providers/google"
 import Kakao from "next-auth/providers/kakao"
 import Naver from "next-auth/providers/naver"
 import CredentialsProvider from "next-auth/providers/credentials";
-import { JWT } from "next-auth/jwt";
+import bcrypt from 'bcrypt'
+import { connectDB } from "../../../../../util/database";
+
+let db = (await connectDB).db('todoList')
 
 export const authOptions = {
   providers: [
@@ -34,18 +36,16 @@ export const authOptions = {
       //직접 DB에서 아이디,비번 비교하고 
       //아이디,비번 맞으면 return 결과, 틀리면 return null 해야함
       async authorize(credentials, req) {
-        const res = await fetch(`${process.env.NEXTAUTH_URL}/api/user/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userid: credentials?.userid,
-            password: credentials?.password,
-          }),
-        });
-        const user = await res.json();
-        if (user) {
+        if(credentials == null) return null
+        let userInfo = await db.collection('user').findOne({userid: credentials.userid})
+        if(userInfo == null) return null
+        let result: boolean = await bcrypt.compare(credentials.password, userInfo.password)
+        let user = { //--return값에 id라는 이름으로 값을 무조건! 넘겨야함
+          id: userInfo.userid,
+          email: userInfo.email,
+          name: userInfo.username,
+        }
+        if (result) {
           // Any object returned will be saved in `user` property of the JWT
           return user;
         } else {
@@ -65,7 +65,6 @@ export const authOptions = {
   callbacks: {
     async signIn({user,account}){ //--구글/카카오 같은 로그인을 사용할 때
       let exsitUser
-      let db = (await connectDB).db('todoList')
       if(account?.provider != 'credentials'){
         try{
           exsitUser = await db.collection('user').findOne({userid: user.id})
@@ -76,7 +75,8 @@ export const authOptions = {
                             email: user.email,
                             profile: user.image,
                             provider: account?.provider,
-                            birth: ''
+                            birth: '',
+                            auth: true,
                         })
             if(!result.acknowledged) return false
           }
@@ -91,16 +91,19 @@ export const authOptions = {
     //user변수는 DB의 유저정보담겨있고 token.user에 뭐 저장하면 jwt에 들어갑니다.
     jwt: async ({ token, user, account }) => { //--db 저장명이랑 맞춰야지ㅡㅡ 몰랐어~
       if (user && account) {
-        token.user = {};
-        token.user.userid = account.provider != 'credentials' ? user.id : user.userid
-        token.user.email = account.provider != 'credentials' ? user.email : user.email
-        token.user.username = account.provider != 'credentials' ? user.name : user.username
+        token.user = {
+          userid: user.id,
+          email: user.email,
+          username: user.name 
+        };
       }
       return token;
     },
     //5. 유저 세션이 조회될 때 마다 실행되는 코드
     session: async ({ session, token }) => {
-      session.user = token.user;  
+      if(token.user){
+        session.user = token.user;  
+      }
       return session;
     },
   },
@@ -110,4 +113,5 @@ export const authOptions = {
   secret : process.env.NEXTAUTH_SECRET,
   //adapter: MongoDBAdapter(connectDB) 
 } satisfies AuthOptions;
-export default NextAuth(authOptions); 
+const handler =  NextAuth(authOptions); 
+export { handler as GET, handler as POST };

@@ -6,7 +6,6 @@ import { todayClean } from "../../../../util/commonFunc"
 interface todoState{
     id: number, content: string, complete: boolean
 }
-type DateType = (string|number|Date)
 
 export default function TodoList(){
     const [contentChck, setContentChck] = useState([{id:0,content:'',complete:false}]) //--체크여부와 데이터를 같이 관리 [{},{}]

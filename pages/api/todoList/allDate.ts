@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { authOptions } from "../auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { connectDB } from "../../../util/database";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function AllDate(req: NextApiRequest, res: NextApiResponse){
     if(req.method == 'GET'){

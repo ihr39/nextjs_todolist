@@ -1,5 +1,5 @@
-import { authOptions } from "../../../../pages/api/auth/[...nextauth]";
-import { today } from "../../../../util/commonFunc";
+
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectDB } from "../../../../util/database";
 import DiaryClient from "./diaryClient";
 import { getServerSession } from 'next-auth'

@@ -1,10 +1,10 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "../../../../../util/database";
-import { authOptions } from "../../../../../pages/api/auth/[...nextauth]";
 import { getServerSession } from 'next-auth'
 import fs from 'fs/promises'
 import path from "path";
+import { authOptions } from "../../auth/[...nextauth]/route";
 
 //--nextjs의 최신기능을 모두 활용 가능
 //--초기 로딩속도를 극적으로 개선

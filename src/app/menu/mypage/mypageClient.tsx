@@ -1,24 +1,37 @@
 'use client'
 
 import Image from "next/image";
-import { UserInfo } from "../../../../types/globalType";
+import { FormInput, UserInfo } from "../../../../types/globalType";
 import { useEffect, useState } from "react";
 import ModalPassword from "./modalPassword";
 import { useForm, SubmitHandler } from "react-hook-form"
-
-type FormInput = {
-    username: string,
-    email: string,
-    year: string,
-    month: string,
-    date: string,
-    profile: File[],
-    profileUrl: string
-}
+import { formatMinSec } from "../../../../util/commonFunc";
 
 export default function MyPageClient({userInfo}:{userInfo: UserInfo}){
     const [profile, setProfile] = useState(userInfo.profile? userInfo.profile:'/blank_profile.png')
     const [modal, setModal] = useState(false)
+    const [timer, setTimer] = useState(180)
+    const [timerActive, setTimerActive] = useState(false)
+
+    useEffect(()=>{
+        if(!timerActive || timer <= 0) return
+
+        const timerId = setInterval(()=>{
+            setTimer(restTime=>{
+                let time = restTime- 1
+                if(time <=0 ){
+                    alert('시간이 만료됐습니다.')
+                    clearInterval(timerId)
+                    setTimerActive(false)
+                    let hideEle = document.querySelector('#email-auth-div')
+                    if(hideEle instanceof HTMLDivElement) hideEle.style.display = 'none'
+                }
+                return time
+            })
+        },1000)
+
+        return ()=>clearInterval(timerId)
+    },[timerActive, timer])
 
     const{
         register,
@@ -89,16 +102,17 @@ export default function MyPageClient({userInfo}:{userInfo: UserInfo}){
                 eadEele.style.display = 'block'
                 let inputEle = eadEele.children.namedItem('authNum')
                 if(inputEle instanceof HTMLInputElement) inputEle.focus()
+                setTimer(180)
+                setTimerActive(true)
             })
         }else{
             let emailEle = document.querySelector('[name="email"]')
             if(emailEle instanceof HTMLInputElement) emailEle.focus()
         }
-    }
+    }  
 
     let onClose = () => setModal(false)
     
-
     useEffect(()=>{
         return()=>{ //--cleanup함수
             if(profile) URL.revokeObjectURL(profile)
@@ -126,7 +140,7 @@ export default function MyPageClient({userInfo}:{userInfo: UserInfo}){
                     <label className=" bottom-2">이름: </label>
                     <input type="text" {...register("username", {required: true})} defaultValue={userInfo.username} 
                         aria-invalid={errors.username ? "true":'false'}
-                        className="block py-2.5 ps-6 pe-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-700 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" 
+                        className="underlineInput ps-6 dark:text-white dark:border-gray-600 dark:focus:border-blue-500 peer" 
                     />
                     {
                         errors.username?.type === 'required' && (<p role="alert" className="errmsg">이름은 필수 값입니다</p>) //--앞이 참이면 뒤를 return
@@ -145,14 +159,18 @@ export default function MyPageClient({userInfo}:{userInfo: UserInfo}){
                     <ModalPassword onShow={modal} onClose={onClose}/>
                 </div>
                 <div className="mb-10">
-                    <input className="form-input w-[80%] mr-5" {...register("email",{required: true})} name="email" defaultValue={userInfo.email}/>
+                    <input className="form-input w-[80%] mr-5" 
+                        {...register("email",{required: true})} name="email" defaultValue={userInfo.email}
+                        disabled={userInfo.auth}
+                    />
                     <button type="button" className="default-btn"
                         onClick={ ()=> emailSend() }
                     >인증</button>
                     { errors.email && <p className="errmsg">이메일은 필수 값입니다</p> }
-                    <div style={{display: "none"}} id="email-auth-div">
+                    <div id="email-auth-div" style={{display: 'none'}}>
                         <label className="mr-4">인증번호</label>
-                        <input className="form-input w-[63%] mr-5" name="authNum"/>
+                        <input className="form-input w-[48%] mr-7" name="authNum"/>
+                        <span className="mr-7">{formatMinSec(timer)}</span>
                         <button type="button" className="default-btn"
                             onClick={(e)=>{
                                 let authEle = document.querySelector('[name="authNum"]')
