@@ -166,7 +166,7 @@ export default function MyPageClient({userInfo}:{userInfo: UserInfo}){
                     <button type="button" className="default-btn"
                         onClick={ ()=> emailSend() }
                     >인증</button>
-                    { errors.email && <p className="errmsg">이메일은 필수 값입니다</p> }
+                    { errors.email && <p className="errmsg">이메일은 필수 값입니다</p> } 
                     <div id="email-auth-div" style={{display: 'none'}}>
                         <label className="mr-4">인증번호</label>
                         <input className="form-input w-[48%] mr-7" name="authNum"/>
