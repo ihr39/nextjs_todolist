@@ -1,10 +1,9 @@
-import { DateType } from "../types/globalType"
 
 export function today(): string{
     let date: DateType = new Date
     let year: string = (date.getFullYear()).toString()
     let mon:string = date.getMonth() + 1 < 10 ? '0'+(date.getMonth() + 1).toString() : (date.getMonth() + 1).toString() 
-    let day: string = (date.getDate()).toString()
+    let day: string = date.getMonth() + 1 < 10 ? '0'+(date.getDate()).toString() : (date.getDate()).toString()
     let today: string = year+'년'+ mon+'월'+ day+'일'
     return today
 }
@@ -13,7 +12,7 @@ export function todayClean(): string{
     let date: DateType = new Date
     let year: string = (date.getFullYear()).toString()
     let mon:string = date.getMonth() + 1 < 10 ? '0'+(date.getMonth() + 1).toString() : (date.getMonth() + 1).toString() 
-    let day: string = (date.getDate()).toString()
+    let day: string = date.getMonth() + 1 < 10 ? '0'+(date.getDate()).toString() : (date.getDate()).toString()
     let today: string = year+ mon+ day
     return today
 }

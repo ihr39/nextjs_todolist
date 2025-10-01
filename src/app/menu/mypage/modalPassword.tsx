@@ -1,5 +1,7 @@
 'use client'
 
+import { CloseBtn } from "../../../../util/button/buttonUtil"
+
 interface PassWord {changedPassword: string, currntPassword: string}
 export default function ModalPassword({onShow, onClose}:{onShow: boolean, onClose: ()=>void}){
     if(!onShow) return null
@@ -7,14 +9,8 @@ export default function ModalPassword({onShow, onClose}:{onShow: boolean, onClos
         <div className="fixed inset-0 flex justify-center items-center">
             <div className="absolute inset-0 bg-black/50"></div>
             <div className="bg-white p-4 rounded-lg w-sm relative">
-                <div className="absolute right-1 top-1">
-                    <button type="button" className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                        onClick={onClose}
-                    >
-                        <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
-                        </svg>
-                    </button>
+                <div className="flex justify-end">
+                    <CloseBtn func={onClose}/>
                 </div>
                 <div className="mt-5">
                     <div className="">

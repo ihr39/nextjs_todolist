@@ -1,7 +1,6 @@
 'use client'
 
 import Image from "next/image";
-import { FormInput, UserInfo } from "../../../../types/globalType";
 import { useEffect, useState } from "react";
 import ModalPassword from "./modalPassword";
 import { useForm, SubmitHandler } from "react-hook-form"

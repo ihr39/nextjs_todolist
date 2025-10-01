@@ -1,7 +1,6 @@
 'use client'
 
 import { dateKoreaChange, todayClean } from "../../../../util/commonFunc"
-import { Diary } from "../../../../types/globalType"
 
 export default function ModalDiary({update, modalOpen, diarys, onClose, onSave}:
     {update: boolean, modalOpen:boolean, diarys:Diary, onClose:()=>void, onSave: (content:Diary)=>void}){

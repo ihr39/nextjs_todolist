@@ -2,7 +2,7 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { connectDB } from "../../../../util/database";
 import DiaryClient from "./diaryClient";
-import { getServerSession } from 'next-auth'
+import { getServerSession } from "next-auth";
 
 export default async function Diary(){
     let session = await getServerSession(authOptions)

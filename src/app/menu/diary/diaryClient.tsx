@@ -3,7 +3,6 @@
 import { useState } from "react"
 import ModalDiary from "./modalDiary"
 import { todayClean } from "../../../../util/commonFunc"
-import { Diary } from "../../../../types/globalType"
 
 export default function DiaryClient({contents}:{contents: {date:string, content:string}[]}){
     const [modalOpen, setModalOpen] = useState(false) //--모달 show 여부

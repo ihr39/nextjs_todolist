@@ -161,3 +161,25 @@
   --tw-ring-shadow: 0 0 0 0px;
   border-color: var(--color-blue-600);
 }
+
+
+@utility nodisabledInput{
+  display: block;
+  width: 100%;
+  font-size: var(--text-sm);
+  color: var(--color-gray-900);
+  background-color: transparent;
+  border-width: 0px;
+  border-color: var(--color-gray-400);
+  appearance: none;
+}
+
+.nodisabledInput:not(:disabled){
+  display: block;
+  color: var(--color-gray-900);
+  background-color: transparent;
+  border-width: 0px;
+  border-bottom-width: 2px;
+  border-color: var(--color-gray-400);
+  appearance: none;
+} 

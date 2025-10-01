@@ -2,7 +2,6 @@
 import { getServerSession } from 'next-auth'
 import { connectDB } from "../../../../util/database";
 import MyPageClient from "./mypageClient";
-import { UserInfo } from "../../../../types/globalType";
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 export default async function MyPage(){

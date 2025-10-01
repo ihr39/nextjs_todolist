@@ -1,15 +1,17 @@
-import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-import NextAuth, { Account, AuthOptions, User } from "next-auth";
+import { JWT } from "next-auth/jwt";
+import NextAuth from "next-auth/next";
+import { NextAuthOptions } from "next-auth";
 import Google from "next-auth/providers/google"
 import Kakao from "next-auth/providers/kakao"
 import Naver from "next-auth/providers/naver"
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from 'bcrypt'
 import { connectDB } from "../../../../../util/database";
+import { Session } from "next-auth";
 
 let db = (await connectDB).db('todoList')
 
-export const authOptions = {
+export const authOptions:NextAuthOptions = {
   providers: [
     Google({
       clientId: process.env.NEXTAUTH_Google_ID ? process.env.NEXTAUTH_Google_ID : "", 
@@ -44,6 +46,7 @@ export const authOptions = {
           id: userInfo.userid,
           email: userInfo.email,
           name: userInfo.username,
+          image: userInfo.profile
         }
         if (result) {
           // Any object returned will be saved in `user` property of the JWT
@@ -65,7 +68,8 @@ export const authOptions = {
   callbacks: {
     async signIn({user,account}){ //--구글/카카오 같은 로그인을 사용할 때
       let exsitUser
-      if(account?.provider != 'credentials'){
+      if(account == null) return false
+      if(account.provider != 'credentials'){
         try{
           exsitUser = await db.collection('user').findOne({userid: user.id})
           if(!exsitUser) {
@@ -74,7 +78,7 @@ export const authOptions = {
                             username: user.name,
                             email: user.email,
                             profile: user.image,
-                            provider: account?.provider,
+                            provider: account.provider,
                             birth: '',
                             auth: true,
                         })
@@ -100,7 +104,7 @@ export const authOptions = {
       return token;
     },
     //5. 유저 세션이 조회될 때 마다 실행되는 코드
-    session: async ({ session, token }) => {
+    session: async ({ session, token }:{session:Session, token:JWT}) => {
       if(token.user){
         session.user = token.user;  
       }
@@ -112,6 +116,6 @@ export const authOptions = {
   },
   secret : process.env.NEXTAUTH_SECRET,
   //adapter: MongoDBAdapter(connectDB) 
-} satisfies AuthOptions;
+};
 const handler =  NextAuth(authOptions); 
 export { handler as GET, handler as POST };

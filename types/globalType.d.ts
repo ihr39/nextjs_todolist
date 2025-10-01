@@ -1,5 +1,4 @@
-import { DefaultSession, DefaultUser } from 'next-auth';
-
+//--import/export 쓰면 전역파일로 인식함
 type DateType = (string|number|Date)
 
 type Diary = {date:string, content: string}
@@ -24,30 +23,14 @@ type FormInput = {
     profileUrl: string
 }
 
-declare module 'next-auth' { //--session이 존재하는한 user는 반드시 존재해야한다
-  interface Session {
-    user: {
-      userid: string; 
-      username: string; 
-      email: string;
-    } & DefaultSession['user']; //-- defaultSession에 user속성을 합성
-  }
+interface ModalGoalType {
+    startDate: Date,
+    endDate: Date,
+    goal: string,
+    content: string
 }
 
-declare module 'next-auth/jwt'{
-  interface JWT extends DefaultUser{
-    user?:{
-      userid: string,
-      email: string,
-      username: string,
-    }
-  }
+interface GoalOnlyIdType extends ModalGoalType{
+  _id: string
 }
-
-declare module 'next-auth'{ //--authorize가 넘기는 user값
-  interface User extends DefaultUser{
-    id: string,
-    email: string,
-    name:string
-  }
-}
+interface Account {}

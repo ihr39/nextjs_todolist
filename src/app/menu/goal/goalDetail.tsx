@@ -1,19 +1,90 @@
 'use client'
+import dayjs from 'dayjs'
+import DatePicker from "react-datepicker"
+import 'react-datepicker/dist/react-datepicker.css';
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup"
+import { useState } from 'react';
 
-export default function GoalDetail({detailOpen}:{detailOpen: boolean}){
+export default function GoalDetail({detailOpen, data}:{detailOpen: boolean, data: GoalOnlyIdType}){
+    const [idEditing, setIsEditing] = useState(true)
 
+    const initialValues = { //-- 초기화 시킬 값
+        startDate: data.startDate,
+        endDate: data.endDate,
+        goal: data.goal,
+        content: data.content
+    };
+
+    const schema = yup.object({
+        startDate: yup.date().required('시작일을 입력하세요'),
+        endDate: yup.date().required('종료일을 입력하세요'),
+        goal: yup.string().required('목표를 입력하세요'),
+        content: yup.string().required('목표 설명을 입력하세요'),
+    })
+
+    const {register, control, handleSubmit} = useForm<ModalGoalType>({defaultValues: initialValues, resolver: yupResolver(schema)})
+    const onSubmit:SubmitHandler<ModalGoalType> = (data) =>{
+        console.log(data)
+        fetch('/api/goal/edit',{
+            method:'POST',
+            body: JSON.stringify(data)
+        })
+        .then((r)=>r.json())
+        .then((r)=>{
+            console.log(r)
+            setIsEditing(true)
+        })
+    }
 
     return(
-        <div id="accordion-collapse-body-1" className={detailOpen ? '':'hidden'} aria-labelledby="accordion-collapse-heading-1">
+        <div id={"accordion-collapse-body-"+data._id} className={detailOpen ? '':'hidden'} aria-labelledby={"accordion-collapse-heading-"+data._id}>
             <div className="py-4 px-5 border border-gray-200 dark:border-gray-700 dark:bg-gray-900">
-                <div className="flex justify-end">
-                    <button type="button" className="light-btn p-2 rounded-sm">수정</button>
-                    <button type="button" className="light-btn p-2 rounded-sm">삭제</button>
-                </div>
-                <div className="mb-5">
-                    <span className="text-lg font-bold">목표설명:</span>
-                    <div>올해 총 10권의 책을 읽고 독후감을 작성한다.</div>
-                </div>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <div className="flex justify-end">
+                        <button type="button" className="light-btn p-2 rounded-sm" onClick={()=>setIsEditing(false)}>수정</button>
+                        <button type="submit" className="light-btn p-2 rounded-sm">저장</button>
+                    </div>
+                    <div>
+                        <div className="flex justify-center mb-5">
+                            <input className='text-xl font-bold text-center nodisabledInput w-[auto]' {...register("goal")} disabled={idEditing}/>
+                        </div>
+                        <div className="mb-5">
+                            <span className="text-lg font-bold">기간:</span>
+                            <div className='flex mt-2'>
+                                <div className=''>
+                                    <label>시작일: </label>
+                                    <Controller
+                                        name="startDate"
+                                        control={control}
+                                        render={({field})=>(
+                                            <DatePicker selected={field.value} dateFormat="yyyy-MM-dd" disabled={idEditing} className='text-sm nodisabledInput'
+                                                onChange={(date: Date | null) => field.onChange(date)}
+                                            />
+                                        )}
+                                    /> 
+                                </div>
+                                <div className=''>
+                                    <label>종료일: </label>
+                                    <Controller
+                                        name="endDate"
+                                        control={control}
+                                        render={({field})=>(
+                                            <DatePicker selected={field.value} dateFormat="yyyy-MM-dd" disabled={idEditing} className='text-sm nodisabledInput'
+                                                onChange={(date: Date | null) => field.onChange(date)}
+                                            />
+                                        )}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div className="mb-5">
+                            <span className="text-lg font-bold">목표설명:</span>
+                            <div><input type="text" {...register("content")} className='text-sm nodisabledInput w-full mt-2' disabled={idEditing} /></div>
+                        </div>
+                    </div>
+                </form>
                 <div>
                     <span className="text-lg font-bold">진행상황</span>
                     <div className="w-full bg-gray-200 rounded-full dark:bg-gray-700 mb-5">
