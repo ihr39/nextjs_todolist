@@ -8,7 +8,7 @@ export default async function Goal(){
     let session = await getServerSession(authOptions)
     if(session == null) return null
     let result = await db.collection('goal').find({userid: session.user.userid}).toArray()
-    let goalList:GoalOnlyIdType[] = result.map((a,i)=>(
+    let goalList:ModalGoalType[] = result.map((a,i)=>(
         {
             _id: a._id.toString(),
             goal: a.goal,

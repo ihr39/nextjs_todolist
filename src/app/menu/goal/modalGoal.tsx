@@ -6,12 +6,13 @@ import { CloseBtn } from "../../../../util/button/buttonUtil"
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup"
+import Loading from "@/app/loading";
 
 export default function ModalGoal({showModal, onClose, addGoalList}
     :{
         showModal:boolean,
         onClose: ()=>void,
-        addGoalList:(data: GoalOnlyIdType)=>void
+        addGoalList:(data: ModalGoalType)=>void
     }
 ){
     const initialValues = { //-- 초기화 시킬 값
@@ -27,13 +28,14 @@ export default function ModalGoal({showModal, onClose, addGoalList}
         content: yup.string().required('목표 설명을 입력하세요'),
     })
 
-    const {register, handleSubmit, control, reset, formState: { errors },} 
+    const {register, handleSubmit, control, reset, formState, formState: { errors },} 
         = useForm<ModalGoalType>({
             defaultValues: initialValues,
             resolver: yupResolver(schema)
         })
-
-    const onSubmit: SubmitHandler<ModalGoalType> = (data) =>{
+    const { isSubmitting } = formState;
+    const onSubmit: SubmitHandler<ModalGoalType> = async (data) =>{
+        await new Promise(resolve => setTimeout(resolve, 1000));
         //console.log(data)
         fetch('/api/goal/add',{
             method:'POST',
@@ -45,7 +47,7 @@ export default function ModalGoal({showModal, onClose, addGoalList}
                 alert(r.errMsg)
                 return
             }
-            let addValue:GoalOnlyIdType = {
+            let addValue:ModalGoalType = {
                 _id: r.returnMsg,
                 goal: data.goal,
                 content: data.content,
@@ -54,7 +56,7 @@ export default function ModalGoal({showModal, onClose, addGoalList}
             }
             addGoalList(addValue)
             alert('저장했습니다!')
-            onClose()
+            handlerClose()
         })
     }
 
@@ -66,6 +68,7 @@ export default function ModalGoal({showModal, onClose, addGoalList}
     if(!showModal) return null
     return(
         <div className="fixed inset-0 flex justify-center items-center ">
+            {isSubmitting&&<Loading/>}
             <div className="absolute inset-0 bg-black/50"></div>
             <div className="w-xl relative">
                 <div className="flex justify-between bg-gray-200 p-4 rounded-t-lg">
@@ -140,7 +143,7 @@ export default function ModalGoal({showModal, onClose, addGoalList}
                             <button className="default-btn dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                 저장
                             </button>
-                            <button type="button" id="close" onClick={onClose}
+                            <button type="button" id="close" onClick={handlerClose}
                                 className="light-btn dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
                             > 닫기 </button>
                         </div>

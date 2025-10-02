@@ -24,13 +24,26 @@ type FormInput = {
 }
 
 interface ModalGoalType {
+    _id?: string,
     startDate: Date,
     endDate: Date,
     goal: string,
     content: string
 }
 
-interface GoalOnlyIdType extends ModalGoalType{
-  _id: string
+interface GoalContext {
+    params: {
+        goalId: string;
+    }
 }
+
+interface GoalDetailType{
+  _id: string,
+  userid: string,
+  goalId: string,
+  detailContent: string,
+  completeAt: Date | null,
+  createAt: Date,
+}
+
 interface Account {}
