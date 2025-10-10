@@ -38,12 +38,27 @@ interface GoalContext {
 }
 
 interface GoalDetailType{
-  _id: string,
+  _id?: string | ObjectId,
   userid: string,
-  goalId: string,
+  goalId: string | ObjectId,
   detailContent: string,
   completeAt: Date | null,
   createAt: Date,
+}
+
+interface TodoType{
+  _id: string | ObjectId,
+  userid: string,
+  date: string,
+  createAt: Date|null
+}
+
+interface TodoDetailType{
+    _id: string, 
+    userid:string,
+    date: string,
+    content: string, 
+    complete: boolean
 }
 
 interface Account {}

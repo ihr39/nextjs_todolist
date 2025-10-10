@@ -4,13 +4,12 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup"
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Loading from "@/app/loading";
 import GoalDetailTable from "./goalDetailTable";
 
 export default function GoalContent({detailOpen, data, changedGoal}:{detailOpen: boolean, data: ModalGoalType, changedGoal: (data?:ModalGoalType)=>void}){
     const [idEditing, setIsEditing] = useState(true)
-    const [goalDetailList, setGoalDetailList] = useState([])
 
     const initialValues = { //-- 초기화 시킬 값
         startDate: data.startDate,
@@ -44,18 +43,6 @@ export default function GoalContent({detailOpen, data, changedGoal}:{detailOpen:
             setIsEditing(true)
         })
     }
-
-    useEffect(()=>{
-        if(data._id){
-            if(detailOpen){
-                fetch('/api/goal/'+data._id)
-                .then((r)=>r.json())
-                .then((r)=>{
-                    setGoalDetailList(r.dataList)
-                })
-            }
-        }      
-    },[detailOpen, data._id])
 
     return(
         <div id={"accordion-collapse-body-"+data._id} className={detailOpen ? '':'hidden'} aria-labelledby={"accordion-collapse-heading-"+data._id}>
@@ -105,7 +92,7 @@ export default function GoalContent({detailOpen, data, changedGoal}:{detailOpen:
                         </div>
                     </div>
                 </form>
-                <GoalDetailTable goalId={typeof data._id === 'undefined'? '' : data._id} goalDetailList={goalDetailList}/>
+                <GoalDetailTable key={data._id} goalId={typeof data._id === 'undefined'? '' : data._id} detailOpen={detailOpen}/>
             </div>
         </div>
     )
