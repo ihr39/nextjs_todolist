@@ -48,8 +48,8 @@ export default function TodoList(){
     },[todoDate])
 
     useEffect(()=>{
-        todayTodoAdd()
         allTodoList()
+        todayTodoAdd()
     },[])
 
     let timeRef = useRef<NodeJS.Timeout | null>(null)

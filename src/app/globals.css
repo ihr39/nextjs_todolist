@@ -183,3 +183,24 @@
   border-color: var(--color-gray-400);
   appearance: none;
 } 
+
+@utility circleBtn{
+  width: calc(var(--spacing) * 10);
+  height: calc(var(--spacing) * 10);
+  border-radius: calc(infinity * 1px);
+  font-size: var(--text-sm);
+  font-weight: bold;
+}
+
+@utility squareBtn{
+  font-size: var(--text-sm);
+  adding-block: calc(var(--spacing) * 1);
+  padding-inline: calc(var(--spacing) * 3);
+  background-color: var(--color-gray-100);
+  border-radius: var(--radius-lg);
+  color: var(--color-gray-600);
+}
+
+.squareBtn:hover{
+  background-color: var(--color-gray-200);
+}

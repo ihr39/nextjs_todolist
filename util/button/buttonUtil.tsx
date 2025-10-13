@@ -23,3 +23,18 @@ export function CloseBtn({func}:{func:()=>void}){
         </button>
     )
 }
+
+export function ModalBtnGroup({text, saveFunc , closeFun}:{text:string,saveFunc?: ()=>void, closeFun:()=>void}){
+    return(
+        <div className="mt-10 flex justify-end">
+            <button className="default-btn dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                onClick={saveFunc}
+            >
+                {text}
+            </button>
+            <button type="button" id="close" onClick={()=>closeFun()}
+                className="light-btn dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+            > 닫기 </button>
+        </div>
+    )
+}

@@ -1,9 +1,30 @@
 'use client'
 
+import { ModalBtnGroup } from "../../../../util/button/buttonUtil"
 import { dateKoreaChange, todayClean } from "../../../../util/commonFunc"
 
 export default function ModalDiary({update, modalOpen, diarys, onClose, onSave}:
     {update: boolean, modalOpen:boolean, diarys:Diary, onClose:()=>void, onSave: (content:Diary)=>void}){
+
+    let addDiary = () => {
+        let params:{date: string, content:string, update: boolean} ={date: '', content: '', update: update}
+        let dateEle = document.querySelector('[name="date"]')
+        let contentEle = document.querySelector('[name="content"]')
+        if(dateEle instanceof HTMLInputElement) params.date = dateEle.value
+        if(contentEle instanceof HTMLTextAreaElement) params.content = contentEle.value
+        fetch('/api/diary', {
+            method:'POST',
+            body: JSON.stringify(params)
+        }).then((r)=>r.json())
+        .then((r)=>{
+            if(r.errMsg){
+                alert(r.errMsg)
+                return
+            }
+            alert('작성완료')
+            onSave({date: params.date, content: params.content})
+        })
+    }
     if(!modalOpen) return null
     else{
         return (
@@ -27,36 +48,7 @@ export default function ModalDiary({update, modalOpen, diarys, onClose, onSave}:
                             defaultValue={diarys.content}
                         >
                         </textarea>
-                        <div className="mt-3 right-0">
-                            <button className="default-btn dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                onClick={(e)=>{
-                                    let params:{date: string, content:string, update: boolean} ={date: '', content: '', update: update}
-                                    let dateEle = document.querySelector('[name="date"]')
-                                    let contentEle = document.querySelector('[name="content"]')
-                                    if(dateEle instanceof HTMLInputElement) params.date = dateEle.value
-                                    if(contentEle instanceof HTMLTextAreaElement) params.content = contentEle.value
-                                    fetch('/api/diary', {method:'POST',
-                                        body: JSON.stringify(params)
-                                    }).then((r)=>r.json())
-                                    .then((r)=>{
-                                        if(r.errMsg){
-                                            alert(r.errMsg)
-                                            return
-                                        }
-                                        alert('작성완료')
-                                        onSave({date: params.date, content: params.content})
-                                        //let closeEle = document.querySelector('#close')
-                                        //if(closeEle instanceof HTMLButtonElement) closeEle.click()
-                                    })
-                                    onSave({date: params.date, content: params.content})
-                                }}
-                            >작성</button>
-                            <button type="button" id="close"
-                                className="light-btn dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                                onClick={onClose}
-                            >
-                            닫기</button>
-                        </div>
+                        <ModalBtnGroup text={"작성"} saveFunc={addDiary} closeFun={onClose}/>
                 </div>
             </div>
         )

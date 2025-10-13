@@ -2,7 +2,7 @@
 
 import DatePicker from "react-datepicker"
 import 'react-datepicker/dist/react-datepicker.css';
-import { CloseBtn } from "../../../../util/button/buttonUtil"
+import { CloseBtn, ModalBtnGroup } from "../../../../util/button/buttonUtil"
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup"
@@ -139,14 +139,7 @@ export default function ModalGoal({showModal, onClose, addGoalList}
                             <input {...register("content")} className="underlineInput peer pt-0 pb-0" placeholder="목표를 설명해보세요"/>
                             {errors.content &&<p className="errmsg">{errors.content.message}</p>}
                         </div>
-                        <div className="mt-10 flex justify-end">
-                            <button className="default-btn dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                저장
-                            </button>
-                            <button type="button" id="close" onClick={handlerClose}
-                                className="light-btn dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
-                            > 닫기 </button>
-                        </div>
+                        <ModalBtnGroup text={"저장"} closeFun={handlerClose}/>
                     </form>
                 </div>
             </div>

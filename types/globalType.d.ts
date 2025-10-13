@@ -61,4 +61,13 @@ interface TodoDetailType{
     complete: boolean
 }
 
+interface RoutineType{
+  _id: ObjectId|string,
+  userid: string,
+  routine: string,
+  routine_date: boolean[],
+  completeHistory: {[key:string]: boolean},
+  createAt: Date|null
+}
+
 interface Account {}
