@@ -1,19 +1,38 @@
 'use client'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CloseBtn, ModalBtnGroup } from "../../../../util/button/buttonUtil";
 import { SubmitHandler, useForm } from "react-hook-form"
+import { Trash2Icon } from "lucide-react";
 
 const weekly = ['일','월','화','수','목','금','토']
-export default function ModalRoutine({modalOpen, modalClose, addRoutineList}
-    :{modalOpen:boolean, modalClose:()=>void, addRoutineList:(data:RoutineType)=>void}){
+export default function ModalRoutine({modalOpen, modalClose, addRoutineList, clickedRoutine, deleteRoutineList, editRoutineList}
+    :{
+        modalOpen:boolean, modalClose:()=>void, addRoutineList:(data:RoutineType)=>void, 
+        clickedRoutine: RoutineType|undefined, deleteRoutineList: (id:string)=>void, editRoutineList: (data:RoutineType)=>void
+    }){
 
-    const [selectedDate, setSeletedDate] = useState(weekly.map((_,i)=> i === (new Date().getDay())))
-    const { register, handleSubmit, watch, formState: { errors },}
+    const [selectedDate, setSeletedDate] = useState(
+        typeof clickedRoutine == 'undefined' ? weekly.map((_,i)=> i === (new Date().getDay()))
+        : clickedRoutine.routine_date
+    )
+    const { register, handleSubmit, watch, formState: { errors }, reset}
     = useForm<RoutineType>({
         defaultValues:{
-            routine: ""
+            routine: typeof clickedRoutine == 'undefined' ? '' : clickedRoutine.routine 
         }
     })
+
+    useEffect(()=>{
+        if(clickedRoutine){ 
+            reset({routine: clickedRoutine.routine})
+            setSeletedDate(clickedRoutine.routine_date)
+        }
+        else{
+            setSeletedDate(weekly.map((_,i)=> i === (new Date().getDay())))
+            reset({routine:''})
+        }
+    },[clickedRoutine, reset])
+
     const toggleDate = (index:number)=>{
         let copyList = [...selectedDate]
         copyList[index] = !copyList[index]
@@ -32,9 +51,17 @@ export default function ModalRoutine({modalOpen, modalClose, addRoutineList}
         ))
     }
     const onSubmit: SubmitHandler<RoutineType> = (data) => {
+        let method
+        if(clickedRoutine){ 
+            method = 'PUT'
+            data._id = clickedRoutine._id
+            data.completeHistory = clickedRoutine.completeHistory
+        }
+        else method = 'POST'
         data.routine_date = selectedDate
+        
         fetch('/api/routine',{
-            method:'POST',
+            method: method,
             body: JSON.stringify(data)
         })
         .then((r)=>r.json())
@@ -43,11 +70,27 @@ export default function ModalRoutine({modalOpen, modalClose, addRoutineList}
                 alert(r.errMsg)
                 return
             }
-            data._id = r.addId
             modalClose()
-            addRoutineList(data)
+            if(clickedRoutine) editRoutineList(data)
+            else addRoutineList(r.addValue) //--date타입이 string으로 넘어감
         })
     }
+
+    let handleDelete = (id: string) => {
+        if(!confirm('해당 루틴을 삭제하시겠습니까?')) return
+        fetch('/api/routine?id='+id,{method:'DELETE'})
+        .then((r)=>r.json())
+        .then((r)=>{
+            console.log(r)
+            if(r.errMsg){
+                alert(r.errMsg)
+                return 
+            }
+            modalClose()
+            deleteRoutineList(id)
+        })
+    }
+
     if(!modalOpen) return null
     return(
         <div>
@@ -56,7 +99,13 @@ export default function ModalRoutine({modalOpen, modalClose, addRoutineList}
                 <div className="w-xl relative">
                     <div className="bg-white p-4 rounded-lg">
                         <div className="flex justify-between">
-                            <span className="text-xl font-bold text-gray-600">루틴 추가하기</span>
+                            <span className="flex text-xl font-bold text-gray-600">
+                                {clickedRoutine ? '루틴 수정': '루틴 추가'}
+                                {clickedRoutine ?
+                                    <Trash2Icon size={28} className="ml-1 transition-colors trashBtn" onClick={()=>handleDelete(clickedRoutine._id)}/>
+                                    : null
+                                }
+                            </span>
                             <CloseBtn func={modalClose}/>
                         </div>
                         <div className="mt-5">

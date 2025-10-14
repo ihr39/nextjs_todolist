@@ -70,4 +70,15 @@ interface RoutineType{
   createAt: Date|null
 }
 
+interface BookType{
+  _id?: ObjectId,
+  userid?: string,
+  startDate: Date,
+  endDate: Date,
+  title: string,
+  oneReview: string,
+  content: string,
+  createAt?: Date|null
+}
+
 interface Account {}

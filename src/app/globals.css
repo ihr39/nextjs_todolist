@@ -204,3 +204,32 @@
 .squareBtn:hover{
   background-color: var(--color-gray-200);
 }
+
+@utility trashBtn{
+  color: var(--color-red-400);
+  padding: calc(var(--spacing) * 1);
+  border-radius: calc(infinity * 1px);
+}
+
+.trashBtn:hover{
+  color: var(--color-red-600);
+  background-color: var(--color-red-50);
+}
+
+@utility circleMaker{
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 4px;
+  background-color: var(--color-red-500);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s;
+}
+
+@utility progress{
+  background-color: var(--color-yellow-500);
+}
+
+@utility complete{
+  background-color: var(--color-green-500);
+}

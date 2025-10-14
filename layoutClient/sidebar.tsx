@@ -9,6 +9,7 @@ export default function SideBar(){
             <li className="pt-5"><Link href={'/menu/diary'}>📓일기</Link></li>
             <li className="pt-5"><Link href={'/menu/goal'}>🏆GOAL</Link></li>
             <li className="pt-5"><Link href={'/menu/routine'}>🔁루틴관리</Link></li>
+            <li className="pt-5"><Link href={'/menu/book'}>📚독서기록</Link></li>
             <li className="pt-5"><Link href={'/menu/mypage'}>👤마이페이지</Link></li>
         </ul>
     )

@@ -14,12 +14,12 @@ export async function POST(req: NextRequest){
         userid: session.user.userid, 
         routine: json.routine, 
         routine_date: json.routine_date, 
-        createAt: new Date(),
+        createAt: new Date(), 
         completeHistory: {[`${today}`]: false}
     }
     try{
         let result = await db.collection('routine').insertOne(addValue)
-        if(result.acknowledged) return NextResponse.json({returnMsg:'성공', addId: result.insertedId},{status:200})
+        if(result.acknowledged) return NextResponse.json({returnMsg:'성공', addValue: {...addValue, _id: result.insertedId}},{status:200})
         else return NextResponse.json({errMsg:'저장실패'},{status:500})
     }catch(e){
         console.log(e)
@@ -32,7 +32,9 @@ export async function PUT(req: NextRequest){
     let session = await getServerSession(authOptions)
     if(session == null) return NextResponse.json({errMsg:'로그인먼저하세요'},{status:400})
     let editData = {
-        'completeHistory' : {[`${today}`]:json.complete}
+        routine: json.routine, 
+        routine_date: json.routine_date, 
+        completeHistory: json.completeHistory
     }
     try{
         let result = await db.collection('routine').updateOne({_id: new ObjectId(json._id)},{'$set':editData})
@@ -41,5 +43,20 @@ export async function PUT(req: NextRequest){
     }catch(e){
         console.log(e)
         return NextResponse.json({errMsg:'서버에러/저장실패'},{status:500})
+    }
+}
+
+export async function DELETE(req: NextRequest){
+    let id = req.nextUrl.searchParams.get('id')
+    let session = await getServerSession(authOptions)
+    if(session == null) return NextResponse.json({errMsg:'로그인먼저하세요'},{status:400})
+    if(id==null) return NextResponse.json({errMsg:'삭제할 데이터가 없습니다.'},{status:400})
+    try{
+        let result = await db.collection('routine').deleteOne({'_id':new ObjectId(id)})
+        if(result.deletedCount>0) return NextResponse.json({returnMsg:'성공'},{status:200})
+        else return NextResponse.json({errMsg:'삭제실패'},{status:500})
+    }catch(e){
+        console.log(e)
+        return NextResponse.json({errMsg:'서버에러/삭제실패'},{status:500})
     }
 }

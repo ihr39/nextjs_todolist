@@ -48,7 +48,7 @@ export default function DiaryClient({contents}:{contents: {date:string, content:
                             }}
                         >
                             {a.date}
-                            <div className="text-gray-500 text-[12px]">짧게라도 일기 내용보여주면 더 이쁠 듯?</div>
+                            <div className="text-gray-500 text-[12px]">{a.content.length>20?(a.content).substring(0,20)+'...':a.content}</div>
                         </div>
                     ))
                     : <div></div>
