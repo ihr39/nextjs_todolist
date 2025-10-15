@@ -30,16 +30,17 @@ export function formatMinSec(totalSeconds: number): string{
 
 //--date를 보내면 - 붙여서 변환
 export function transDate(data: Date): string{
+    if(typeof data == 'string') data = new Date(data)
     let year: string = (data.getFullYear()).toString()
     let mon:string = data.getMonth() + 1 < 10 ? '0'+(data.getMonth() + 1).toString() : (data.getMonth() + 1).toString() 
-    let day: string = data.getMonth() + 1 < 10 ? '0'+(data.getDate()).toString() : (data.getDate()).toString()
+    let day: string = data.getDate() < 10 ? '0'+(data.getDate()).toString() : (data.getDate()).toString()
     let date: string = year+'-'+ mon+'-'+ day
     return date
 }
 
 //--시간을 초기화해서 날짜로만 비교할 수 있게
 export function onlyDateCompare(data: Date){
-    if(!(data instanceof Date)) return ''
     if(typeof data == 'string') data = new Date(data)
+    if(!(data instanceof Date)) return ''
     return data.setHours(0, 0, 0, 0)
 }

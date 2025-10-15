@@ -55,7 +55,7 @@ export default async function RootLayout({
             } 
           </div>
         </div>
-        <div className="flex h-full">
+        <div className="flex h-screen">
           <div className="w-[15%] pl-15 pt-5 pb-5 text-left bg-white border-r border-gray-200">
             <SideBar/>
           </div>

@@ -73,11 +73,12 @@ interface RoutineType{
 interface BookType{
   _id?: ObjectId,
   userid?: string,
-  startDate: Date,
-  endDate: Date,
+  startDate: Date | null,
+  endDate: Date | null,
   title: string,
   oneReview: string,
   content: string,
+  score: number | null,
   createAt?: Date|null
 }
 

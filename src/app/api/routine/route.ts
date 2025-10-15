@@ -37,7 +37,7 @@ export async function PUT(req: NextRequest){
         completeHistory: json.completeHistory
     }
     try{
-        let result = await db.collection('routine').updateOne({_id: new ObjectId(json._id)},{'$set':editData})
+        let result = await db.collection('routine').updateOne({_id: new ObjectId(json._id), userid: session.user.userid},{'$set':editData})
         if(result.modifiedCount>0) return NextResponse.json({returnMsg:'성공'},{status:200})
         else return NextResponse.json({errMsg:'저장실패'},{status:500})
     }catch(e){
@@ -52,7 +52,7 @@ export async function DELETE(req: NextRequest){
     if(session == null) return NextResponse.json({errMsg:'로그인먼저하세요'},{status:400})
     if(id==null) return NextResponse.json({errMsg:'삭제할 데이터가 없습니다.'},{status:400})
     try{
-        let result = await db.collection('routine').deleteOne({'_id':new ObjectId(id)})
+        let result = await db.collection('routine').deleteOne({'_id':new ObjectId(id), userid: session.user.userid})
         if(result.deletedCount>0) return NextResponse.json({returnMsg:'성공'},{status:200})
         else return NextResponse.json({errMsg:'삭제실패'},{status:500})
     }catch(e){
