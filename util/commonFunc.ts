@@ -42,5 +42,6 @@ export function transDate(data: Date): string{
 export function onlyDateCompare(data: Date){
     if(typeof data == 'string') data = new Date(data)
     if(!(data instanceof Date)) return ''
-    return data.setHours(0, 0, 0, 0)
+    data.setHours(0, 0, 0, 0)
+    return data.getTime()
 }

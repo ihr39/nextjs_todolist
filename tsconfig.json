@@ -22,9 +22,10 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./src/*"
+        "./*"
       ]
     }
   },
@@ -33,10 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "next-env.d.ts",
-    "pages/api/user/register.js",
-    "src/app/loading.tsx",
     "types/globalType.d.ts",
-    "util/database.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [
